@@ -1,0 +1,40 @@
+---
+title: "Grad Symposium Survey Results"
+author: "Tyler Leigh"
+date: "3/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+pacman::p_load(tidyverse, haven)
+```
+
+```{r}
+dat <- read_sav("Grad Symposium 2021_March 4, 2021_13.24.sav")
+
+attributes(dat$Q2)$labels
+table(dat$Q2)
+```
+
+```{r}
+dat.rank <- dat %>%
+  select(Q3_1, Q3_2, Q3_3, Q3_4, Q3_5) %>%
+  pivot_longer(everything(), names_to = c(".value", "option"), names_sep = "_") %>%
+  mutate(option=factor(option, levels=c(1:5), labels=c("Short Vid", "Roundtable", "Extend Abstract", "Elevator Pitch", "Posters"))) %>%
+  group_by(option) %>%
+  summarize(mean=mean(Q3, na.rm=T))
+```
+
+
+```{r}
+dat %>%
+  select(Q4_1, Q4_2, Q4_3, Q4_4) %>%
+  pivot_longer(everything(), names_to = c(".value", "timing"), names_sep = "_") %>%
+  mutate(Q4=car::recode(Q4, "1=1; else=0"))%>%
+  mutate(timing=factor(timing, levels=c(1:4), labels=c("Don't", "End of Semester", "Finals", "Summer"))) %>%
+  group_by(timing) %>%
+  summarize(mean=mean(Q4, na.rm=T)) %>%
+  knitr::kable()
+```
+
