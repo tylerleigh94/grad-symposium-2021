@@ -18,12 +18,13 @@ table(dat$Q2)
 ```
 
 ```{r}
-dat.rank <- dat %>%
+dat %>%
   select(Q3_1, Q3_2, Q3_3, Q3_4, Q3_5) %>%
   pivot_longer(everything(), names_to = c(".value", "option"), names_sep = "_") %>%
   mutate(option=factor(option, levels=c(1:5), labels=c("Short Vid", "Roundtable", "Extend Abstract", "Elevator Pitch", "Posters"))) %>%
   group_by(option) %>%
-  summarize(mean=mean(Q3, na.rm=T))
+  summarize(mean=mean(Q3, na.rm=T)) %>%
+  knitr::kable()
 ```
 
 
